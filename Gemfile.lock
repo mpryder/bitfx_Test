@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/djonasson/world_flags.git
+  revision: 732e7807e7a463113378e62f879f36858af00697
+  specs:
+    world_flags (0.1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -215,6 +221,7 @@ GEM
     will_paginate (3.0.3)
     win32-process (0.7.4)
       ffi (>= 1.0.0)
+    win32console (1.3.2)
     win32console (1.3.2-x86-mingw32)
     xpath (0.1.4)
       nokogiri (~> 1.3)
@@ -250,3 +257,4 @@ DEPENDENCIES
   sqlite3 (= 1.3.5)
   uglifier (= 1.2.3)
   will_paginate (= 3.0.3)
+  world_flags!

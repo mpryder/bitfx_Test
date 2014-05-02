@@ -89,13 +89,14 @@ p {
 .containermain {
 	margin: 60px auto;
 	width: 80%;
-
+    test-align:center;
 }
 
 
 /* Footer */
 
 footer {
+  position: inherit;
 	margin-top: 45px;
 	padding-top: 5px;
 	border-top: 1px solid $grayMediumLight;
@@ -200,18 +201,31 @@ input, textarea, select, .uneditable-input {
 	@include box_sizing;
 }
 .divLeft{
-  float: left;
+ float:left;
   position: absolute;
-  width: 304px;
+  width: 35px;
 }
 
-.divMid{
+.divMid1{
   position: absolute;
-  margin-left: 305px;
-  width:240px;
+  margin-left: 35px;
+  width:340px;
+}
+.divMid2{
+  position: absolute;
+  margin-left: 375px;
+  width:200px;
 }
 
 .divRight{
-  margin-left: 550px;
+  margin-left: 575px;
   width:200px;
+}
+tr{
+  height:29px;
+}
+#center{
+  margin-left: auto;
+  margin-right:auto;
+  width:775px;
 }

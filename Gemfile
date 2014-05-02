@@ -8,6 +8,7 @@ gem 'will_paginate', '3.0.3'
 gem 'bootstrap-will_paginate', '0.0.6'
 gem 'angularjs-rails'
 gem 'font-awesome-rails'
+gem 'world_flags', :git => 'git://github.com/djonasson/world_flags.git'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
