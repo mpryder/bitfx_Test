@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140304201748) do
+ActiveRecord::Schema.define(:version => 20140427192253) do
+
+  create_table "fx_rates", :force => true do |t|
+    t.date     "value_date"
+    t.string   "currency"
+    t.float    "rate"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"

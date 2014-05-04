@@ -2,15 +2,17 @@
 <html lang="en" data-framework="angularjs">
 <head>
   <title><%= full_title (yield(:title)) %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag "jquery-1.4.2.min", "rails", "highcharts" %>
   <%= csrf_meta_tags %>
   <%= render 'layouts/shim'%>
 </head>
 <body>
 	<%= render 'layouts/header'%>
    	
-   	<div class = "containermain">
+   	<div class = "container containermain">
 
       <%flash.each do |key, value| %> 
         <%= content_tag(:div, value, class: "alert alert-#{key}") %>

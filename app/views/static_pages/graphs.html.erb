@@ -1,0 +1,98 @@
+<h1>Currency Rates History</h1>
+<div class="row-fluid">
+  <div class="span12">
+    <%= form_tag currency_list_url, method: :get do %>
+      <select class="form-control" id="currency_dropdown"></select>
+    <% end %>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span5">
+    <div id="chart_week"></div>
+  </div>
+  <div class="span7">
+    <div id="chart_month"></div>
+  </div>
+</div>
+<br/>
+<div class="row-fluid">
+  <div class="span12">
+    <div id="chart_quarter" style=""></div>
+  </div>
+</div>
+
+<script>
+
+  function get_currency_list() {
+    var menu = $('#currency_dropdown');
+    menu.append('<option>Please select...</option>');
+    $.get('/fx_api/currency_list', function(response) {
+      for(var counter = 0; counter < response.length; counter ++) {
+        menu.append('<option>' + response[counter] + '</option>');
+      }
+    });
+    menu.on('change', function() {
+      update_graphs();
+    });
+  }
+
+ // draw the graph from within the $.get( api_address, the graph needs to go in here ) thing.
+ //top level function is on 41, it calls 47, and then 47 will call 62
+  function update_graphs() {
+    make_one_graph('#chart_week', 'Exchange rates for this week ', 7, 'line');
+    make_one_graph('#chart_month', 'Exchange rates for this Month ', 31, 'line');
+    make_one_graph('#chart_quarter', 'Exchange rates for this Quarter ', 90, 'column');
+  }
+
+  function make_one_graph(div_id, graph_title, number_of_days, graph_type) {
+    var menu = $('#currency_dropdown');
+    var last_week = new Date();
+    last_week.setDate(last_week.getDate()-number_of_days);
+    last_week = last_week.toISOString().slice(0,10);
+    api_data = $.getJSON('/fx_api/' + menu.val() + '/' + last_week, function(api_data) {  //this getJSON is to get data from the api, we then draw a graph using that data
+      dates_array = []; rates_array = [];                                                  // here we are setting the rates & dates variables to empty arrays
+      for(var counter = 0; counter < api_data.length; counter ++) {                     // we had to put the dates & rates variables inside this function, they were outside it before
+        dates_array[counter] = api_data[counter]['date'];                                // the empty arrays get populated here
+        rates_array[counter] = api_data[counter]['rate'];                                // and here
+      }
+      draw_a_graph(div_id, graph_type, graph_title, dates_array, menu.val(), rates_array);
+    });
+  }
+
+  function draw_a_graph(div_id, graph_type, graph_title, x_categories, x_label, x_data) {            //I can use this function & variable for ANY chart or even any chart type, not just line.
+    $(div_id).highcharts({
+      chart: {
+        type: graph_type
+      },
+      title: {
+        text: graph_title
+      },
+      xAxis: {
+        categories: x_categories,
+        labels: {
+          rotation: -90,
+          align: 'right'
+        }
+      },
+      yAxis: {
+        title: {
+          text: ' Rate'
+        }
+      },
+      series: [{
+        name: x_label,
+        data: x_data
+      }
+     ]
+    });
+  }
+
+  $(document).on('ready', function() {
+    get_currency_list();
+  })
+
+</script>
+
+<!--the update_graphs function currently sets up a week_rate function, I could set this up to be
+rewrite it so that you send in the number of days you want - so 7, or 90, or 365 - and the graph would get drawn on that basis
+ -->

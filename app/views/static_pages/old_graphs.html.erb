@@ -1,0 +1,113 @@
+<h1>Currency Rates History</h1>
+<div class="row">
+  <div class="col-md-12">
+    <%= form_tag currency_list_url, method: :get do %>
+      <select class="form-control" id="currency_dropdown"></select>
+    <% end %>
+    <div id="chart_week"></div>
+    </br>
+    <div id="chart_year"></div>
+  </div>
+</div>
+
+<script>
+
+  var week_data, year_data;
+  var week_dates = [];
+  var week_rates = [];
+
+  function get_currency_list() {
+    var menu = $('#currency_dropdown');
+    menu.append('<option>Please select...</option>');
+    $.get('/fx_api/currency_list', function(response) {
+      for(var counter = 0; counter < response.length; counter ++) {
+        menu.append('<option>' + response[counter] + '</option>');
+      }
+    });
+    menu.on('change', function() {
+      update_graph();
+    });
+  }
+
+  // You need to draw the graph from within the $.get( api_address, the graph needs to go in here ) thing.
+
+  function update_graph() {
+    var menu = $('#currency_dropdown');
+    var last_week = new Date();
+    last_week.setDate(last_week.getDate()-7);
+    last_week = last_week.toISOString().slice(0,10);
+    week_data = $.getJSON('/fx_api/' + menu.val() + '/' + last_week, function(data) {
+      return data;
+    });
+    //week_data = week_data.responseJSON;
+    $.getJSON('/fx_api/' + menu.val() + '/2014-01-01', function(data) {
+      year_data = data;
+    });
+    console.log(week_data);
+    for(var counter = 0; counter < week_data.length; counter ++) {
+      week_dates[counter] = week_data[counter]['date'];
+      week_rates[counter] = week_data[counter]['rate'];     /*building up two arrays, one with all dates, other with dates */
+    }
+    $('#chart_week').highcharts({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Exchange rates for this week '
+      },
+      xAxis: {
+        categories: week_dates
+      },
+      yAxis: {
+        title: {
+          text: ' yAxis'
+        }
+      },
+      series: [{
+        name: menu.val(),
+        data: week_rates
+      }//, {
+        // name: 'USD',
+        // data: [5, 7, 3, 4]
+        // }
+      ]
+    });
+
+    $('#chart_year').highcharts({
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Fluctuations, 2014 '
+      },
+      xAxis: {
+        categories: ['January ', 'February ', 'March ', 'April ']
+      },
+      yAxis: {
+        title: {
+          text: ' value'
+        }
+      },
+      series: [{}]
+
+    });
+
+  }
+  $(document).on('ready', function() {
+    get_currency_list();
+  })
+
+
+</script>
+
+
+old week data code:
+week_data = $.getJSON('/fx_api/' + menu.val() + '/' + last_week, function(week_data) {  //this getJSON is to get data from the api, we then draw a graph using that data
+week_dates = []; week_rates = [];                                                  // here we are setting the rates & dates variables to empty arrays
+for(var counter = 0; counter < week_data.length; counter ++) {                     // we had to put the dates & rates variables inside this function, they were outside it before
+week_dates[counter] = week_data[counter]['date'];                                // the empty arrays get populated here
+week_rates[counter] = week_data[counter]['rate'];                                // and here
+}
+
+
+we replaced week_dates and week_data and week _rates with more generic variable names which will stand for several functions, not just the one week graph
